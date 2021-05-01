@@ -1,16 +1,19 @@
 <template>
   <div>
-    <add-user-form />
+    <show-users />
+    <add-user />
   </div>
 </template>
 
 <script>
-import AddUserForm from './components/AddUserForm'
+import AddUser from './components/forms/AddUserForm'
+import ShowUsers from './components/users/ShowAllUsers'
 
 export default {
   name: 'App',
   components: {
-    AddUserForm
+    AddUser,
+    ShowUsers
   }
 }
 </script>
