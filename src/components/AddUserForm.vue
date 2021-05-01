@@ -31,6 +31,7 @@
                 <label for="form-email" v-if="haveMoreEmails">
                     Email {{ num + 1}}
                 </label>
+                <span class="delete" @click.prevent="removeEmailInput(num)">&#10006;</span>
                 <input type="text"
                     v-if="haveMoreEmails"
                     id="form-email" name="form-email"
@@ -42,7 +43,7 @@
                 <span class="add-email-button">+</span>
                 <p class="add-email-text">Přidat email</p><br> 
             </div>
-            <p class="error" v-if="messages.formError">Formulář se nepodařilo odeslat</p>
+            <p class="error" v-if="messages.formError">Někde se stala chyba. Zkus to znovu.</p>
             <div class="save-div">
                 <button class="save-btn" @click.prevent="validateForm">Uložit</button>
             </div>
@@ -69,13 +70,24 @@ export default {
                 ],
                 formError: false,
                 formUserAdded: false,
-            }
+            },
+            //newID: null,
+            api: "https://unsure-dandelion.herokuapp.com/api/people"
         }
     },
+    //mounted(){
+    //    this.setNewID();
+    //},
     methods: {
         addEmailInput(){
             this.activeEmailInputs.push(this.activeEmailInputs.length + 1);
             this.formData.emails.push("");
+            this.messages.mailError.push(false);
+        },
+        removeEmailInput(num){
+            this.activeEmailInputs.splice(this.activeEmailInputs.indexOf(num), 1);
+            this.formData.emails.splice(num, 1);
+            this.messages.mailError.splice(num, 1);
         },
         isInputEmpty(input){
             if (input.length > 0) return false;
@@ -86,26 +98,42 @@ export default {
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return false;
             return true;
         },
+        validateEmails(){
+            let results = [];
+            let emails = this.formData.emails;
+
+            for(let email in emails){
+
+                let emailValid = this.isEmailValid(emails[email]);
+
+                if(emailValid) {
+                    results.push(true)
+                }
+                else if (!emailValid) {
+                    this.messages.mailError[email] = true;
+                    results.push(false);
+                }    
+            }
+            return results.every(result => result === true)
+        },
         validateForm(){
             this.hideMessages();
 
             let nameValid = !this.isInputEmpty(this.formData.firstname);
-            let emailValid = this.isEmailValid(this.formData.emails[0]);
+            let emailsValid = this.validateEmails();
 
-            if (nameValid && emailValid) {
-                this.addUser(); return
+            if (nameValid && emailsValid) {
+                this.addUser();
+                return
             }
             if (!nameValid) {
                 this.messages.nameError = true;
-            }
-            if (!emailValid) {
-                this.messages.mailError[0] = true;
-            }
+            }            
         },
         hideMessages(){
             let text = this.messages;
             text.nameError = false;
-            text.mailError[0] = false;
+            text.mailError.splice(0, text.mailError.length, false)
             text.formError = false;
             text.formUserAdded = false;
         },
@@ -116,11 +144,67 @@ export default {
             data.emails.splice(0, data.emails.length, "");
             this.activeEmailInputs.slice(0, this.activeEmailInputs.length)
         },
+        //giveID(arr, index){
+        //    let num = index;
+        //    if(arr.includes(index)){
+        //        num++;
+        //        this.giveID(arr, num)
+        //    }
+        //    return num
+        //},
+        //async setNewID(){
+        //    await fetch(this.api)
+        //    .then(res => res.json())
+        //    .then(data => {
+        //        let numUsers = data.data.length;
+        //        let idArr = data.data.map(user => user.id);
+        //        this.newID = this.giveID(idArr, numUsers);
+        //    })
+        //    .catch(error => console.log(error, "Couldn't get new ID"))
+        //},
+        createUser(){
+            let fullname = this.formData.firstname;
+            if (!this.isInputEmpty(this.formData.lastname)){
+                fullname += " " + this.formData.lastname
+            }
+
+            let newUser = {
+                //id: this.newID,
+                name: fullname,
+                emails: this.formData.emails.slice(),
+                data: null,
+                avatar: null
+            };
+            return JSON.stringify(newUser)
+        },
         addUser(){
+            const jsonData = this.createUser();
+
+            fetch(this.api, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: jsonData
+            })
+            .then(response => {
+                if(response.ok) {
+                    this.userAdded(jsonData)
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                this.messages.formError = true; 
+            })
+        },
+        userAdded(user){
+            console.log("Added user: " + user)
             this.messages.formUserAdded = true;
+            //this.setNewID();
             this.clearForm();
             setTimeout(()=>{ this.messages.formUserAdded = false }, 5000)
-        }
+        },      
     },
     computed: {
         haveMoreEmails(){
@@ -252,7 +336,7 @@ export default {
     .error {
         color: hsl(0, 80%, 60%);
         font-weight: 200;
-        margin-bottom: 30px;
+        margin-bottom: 30px;    
     }
 
     .error-overline {
@@ -268,6 +352,16 @@ export default {
     .center {
         text-align: center;
         margin-top: 20px;
+    }
+
+    .delete {
+        color: hsl(0, 80%, 60%);
+        font-size: 1.1em;
+        margin-left: 15px;
+    }
+
+    .delete:hover {
+        cursor: pointer;
     }
 
     @media(max-width: 470px){
