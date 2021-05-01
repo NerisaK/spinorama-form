@@ -13,32 +13,40 @@
             <label for="form-name">Jméno</label>
             <input type="text"
                 id="form-name" name="form-name"
-                v-model="formData.firstname"
+                v-model.trim="formData.firstname"
             >
+            <p class="error">Jméno je povinné</p>
             <label for="form-lastname">Příjmení</label>
             <input type="text"
                 id="form-lastname" name="form-lastname"
-                v-model="formData.lastname"
+                v-model.trim="formData.lastname"
             >
             <label for="form-email">Email</label>
             <input type="text"
                 id="form-email" name="form-email" placeholder="johndoe@mail.com"
-                v-model="formData.email"
+                v-model.trim="formData.emails[0]"
             >
-            <div>
-                <label v-if="activeEmailInputs > 0" for="form-email">Email {{ activeEmailInputs + 1 }}</label>
-                <input v-if="activeEmailInputs > 0" type="text"
+            <p class="error">Neplatný email</p>
+            <div v-for="num in activeEmailInputs" :key="num">
+                <label for="form-email" v-if="haveMoreEmails">
+                    Email {{ num + 1}}
+                </label>
+                <input type="text"
+                    v-if="haveMoreEmails"
                     id="form-email" name="form-email"
-                    v-model="formData.email1"
+                    v-model.trim="formData.emails[num]"
                 >
+                <p class="error">Neplatný email</p>
             </div>
-            <div class="add-email" @click.prevent="addEmailInput" v-if="activeEmailInputs < 3">
+            <div class="add-email" @click.prevent="addEmailInput" v-if="activeEmailInputs.length < 3">
                 <span class="add-email-button">+</span>
                 <p class="add-email-text">Přidat email</p><br> 
             </div>
+            <p class="error">Formulář se nepodařilo odeslat</p>
             <div class="save-div">
-                <button class="save-btn" @submit.prevent="">Uložit</button>
+                <button class="save-btn" @click.prevent="validateForm">Uložit</button>
             </div>
+            <p class="success center">Uživatel uložen</p>
         </form>
     </div>
 </template>
@@ -51,15 +59,48 @@ export default {
             formData: {
                 firstname: "",
                 lastname: "",
-                email: ""
+                emails: [""]
             },
-            activeEmailInputs: 0,
+            activeEmailInputs: [],
         }
     },
     methods: {
         addEmailInput(){
-            if(this.activeEmailInputs > 3) return;
-            this.activeEmailInputs++
+            this.activeEmailInputs.push(this.activeEmailInputs.length + 1);
+            this.formData.emails.push("");
+        },
+        isInputEmpty(input){
+            if (input.length > 0) return false;
+            return true;
+        },
+        isEmailValid(email){
+            if (this.isInputEmpty(email)) return false;
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return false;
+            return true;
+        },
+        validateForm(){
+            let nameValid = !this.isInputEmpty(this.formData.firstname);
+            let emailValid = this.isEmailValid(this.formData.emails[0]);
+
+            if (nameValid && emailValid) {
+                this.addUser(); return
+            }
+            if (!nameValid) {
+                console.log("Invalid name!");
+            }
+            if (!emailValid) {
+                console.log("Invalid email!");
+            }
+            else {console.log("Something went wrong...")}
+        },
+        addUser(){
+            console.log("User added")
+        }
+    },
+    computed: {
+        haveMoreEmails(){
+            if (this.activeEmailInputs.length > 0) return true;
+            return false;
         }
     }    
 }
@@ -181,6 +222,27 @@ export default {
         cursor: pointer;
         border-color: hsl(200, 100%, 70%);
         color: hsl(200, 100%, 70%);
+    }
+
+    .error {
+        color: hsl(0, 80%, 60%);
+        font-weight: 200;
+        margin-bottom: 30px;
+    }
+
+    .error-overline {
+        border: 2px solid hsl(0, 80%, 70%);        
+    }
+
+    .success{
+        color: hsl(103, 50%, 60%);
+        font-weight: 200;
+        margin-bottom: 35px;
+    }
+
+    .center {
+        text-align: center;
+        margin-top: 20px;
     }
 
     @media(max-width: 470px){
