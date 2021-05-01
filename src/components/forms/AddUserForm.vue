@@ -1,8 +1,5 @@
 <template>
-    <div class="container">
-        <div class="form-header">
-            <h1 class="logo">Spinorama</h1>
-        </div>
+    <div>
         <div class="user-picture">
             <img
                 src="https://avatars.dicebear.com/api/male/jwnfdj23o4njh.svg"
@@ -48,6 +45,7 @@
                 <button class="save-btn" @click.prevent="validateForm">Uložit</button>
             </div>
             <p class="success center" v-if="messages.formUserAdded">Uživatel uložen</p>
+            <p class="center back" @click.prevent="$emit('hideForm')">zpátky na seznam</p>
         </form>
     </div>
 </template>
@@ -217,31 +215,6 @@ export default {
 
 
 <style scoped>
-    .container {
-        align-content: center;
-        margin: 50px auto;
-        border: 1px solid hsla(0, 0%, 50%, 0.400);
-        max-width: fit-content;
-        color: hsl(200, 100%, 50%);
-    }  
-
-    .form-header {
-        padding: 4em 4em;
-        background: linear-gradient(to bottom right,
-            hsl(190, 80%, 50%) 50%, transparent 50.5%)
-            no-repeat bottom,
-            linear-gradient(0deg, hsl(190, 80%, 50%), hsl(190, 80%, 50%))
-            no-repeat top;
-        background-size: 100% 7em, 100% calc(100% - 7em)
-    }
-
-    .logo {
-        color: hsl(210, 70%, 30%);
-        font-size: 3.3rem;
-        font-weight: 800;
-        margin: auto auto 2.5em auto;
-        text-align: center;
-    }
 
     .user-picture {
         position: relative;
@@ -259,7 +232,6 @@ export default {
     }
 
     form {
-        
         padding: 4em 4em;
     }
 
@@ -364,13 +336,15 @@ export default {
         cursor: pointer;
     }
 
-    @media(max-width: 470px){
-        .logo {
-            font-size: 2.2rem;    
-        }
-
-        .form-header {
-            padding: 4em 0;
-        }
+    .back {
+        font-weight: 400;
+        margin-top: 40px;
+        margin-bottom: -20px;
     }
+
+    .back:hover {
+        cursor: pointer;
+        font-weight: bold;
+    }
+    
 </style>
