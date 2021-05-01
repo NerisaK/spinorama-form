@@ -15,7 +15,7 @@
                 id="form-name" name="form-name"
                 v-model.trim="formData.firstname"
             >
-            <p class="error">Jméno je povinné</p>
+            <p class="error" v-if="messages.nameError">Jméno je povinné</p>
             <label for="form-lastname">Příjmení</label>
             <input type="text"
                 id="form-lastname" name="form-lastname"
@@ -26,7 +26,7 @@
                 id="form-email" name="form-email" placeholder="johndoe@mail.com"
                 v-model.trim="formData.emails[0]"
             >
-            <p class="error">Neplatný email</p>
+            <p class="error" v-if="messages.mailError[0]">Neplatný email</p>
             <div v-for="num in activeEmailInputs" :key="num">
                 <label for="form-email" v-if="haveMoreEmails">
                     Email {{ num + 1}}
@@ -36,17 +36,17 @@
                     id="form-email" name="form-email"
                     v-model.trim="formData.emails[num]"
                 >
-                <p class="error">Neplatný email</p>
+                <p class="error" v-if="messages.mailError[num]">Neplatný email</p>
             </div>
             <div class="add-email" @click.prevent="addEmailInput" v-if="activeEmailInputs.length < 3">
                 <span class="add-email-button">+</span>
                 <p class="add-email-text">Přidat email</p><br> 
             </div>
-            <p class="error">Formulář se nepodařilo odeslat</p>
+            <p class="error" v-if="messages.formError">Formulář se nepodařilo odeslat</p>
             <div class="save-div">
                 <button class="save-btn" @click.prevent="validateForm">Uložit</button>
             </div>
-            <p class="success center">Uživatel uložen</p>
+            <p class="success center" v-if="messages.formUserAdded">Uživatel uložen</p>
         </form>
     </div>
 </template>
@@ -62,6 +62,14 @@ export default {
                 emails: [""]
             },
             activeEmailInputs: [],
+            messages: {
+                nameError: false,
+                mailError: [
+                    false,
+                ],
+                formError: false,
+                formUserAdded: false,
+            }
         }
     },
     methods: {
@@ -79,6 +87,8 @@ export default {
             return true;
         },
         validateForm(){
+            this.hideMessages();
+
             let nameValid = !this.isInputEmpty(this.formData.firstname);
             let emailValid = this.isEmailValid(this.formData.emails[0]);
 
@@ -86,15 +96,30 @@ export default {
                 this.addUser(); return
             }
             if (!nameValid) {
-                console.log("Invalid name!");
+                this.messages.nameError = true;
             }
             if (!emailValid) {
-                console.log("Invalid email!");
+                this.messages.mailError[0] = true;
             }
-            else {console.log("Something went wrong...")}
+        },
+        hideMessages(){
+            let text = this.messages;
+            text.nameError = false;
+            text.mailError[0] = false;
+            text.formError = false;
+            text.formUserAdded = false;
+        },
+        clearForm(){
+            let data = this.formData;            
+            data.firstname = "";
+            data.lastname = "";
+            data.emails.splice(0, data.emails.length, "");
+            this.activeEmailInputs.slice(0, this.activeEmailInputs.length)
         },
         addUser(){
-            console.log("User added")
+            this.messages.formUserAdded = true;
+            this.clearForm();
+            setTimeout(()=>{ this.messages.formUserAdded = false }, 5000)
         }
     },
     computed: {
