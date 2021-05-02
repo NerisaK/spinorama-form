@@ -78,7 +78,8 @@ export default {
     },
     props: {
         userID: Number,
-        api: String
+        api: String,
+        headers: Object
     },
     emits: [
         'hideForm'
@@ -114,11 +115,8 @@ export default {
         validateEmails(){
             let results = [];
             let emails = this.formData.emails;
-
             for(let email in emails){
-
                 let emailValid = this.isEmailValid(emails[email]);
-
                 if(emailValid) {
                     results.push(true)
                 }
@@ -141,12 +139,10 @@ export default {
 
             if(!this.isInputEmpty(data.name)){
                 changes.name = data.name      
-            }
-            
+            }            
             if(!this.isInputEmpty(data.img)){
                 changes.avatar = data.img       
             }
-
             if(!this.isInputEmpty(data.emails[0])){
                 changes.emails = data.emails.slice()      
             }
@@ -154,17 +150,16 @@ export default {
                 let emailsArr = [];
                 emailsArr.push(user.emails[0]);
                 emailsArr.push(data.emails.slice(1))
-            }
-            
+            }            
             return JSON.stringify(changes)            
         },
         changesValid(){
             this.hideMessages();
-            if (!this.validateEmails()) return false;
 
             let user = this.user;
             let data = this.formData;
 
+            if (!this.validateEmails()) return false; 
             if((user.name === data.name)
                 && (user.avatar === data.img)
                 && (user.emails === data.emails)
@@ -176,13 +171,10 @@ export default {
             if(!this.changesValid) return;
 
             let jsonData = this.stageChanges();
-            
+                        
             fetch(this.api + "/" + this.userID, {
                 method: 'PATCH',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
+                headers: this.headers,
                 body: jsonData
             })
             .then(response => {

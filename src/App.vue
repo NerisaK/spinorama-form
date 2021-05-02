@@ -7,12 +7,12 @@
       <div v-if="showUsers || showAddUser" class="picture">
           <img
             src="./assets/hockey-icon.svg"
-            alt="hokej - ikonka"
+            alt="hokejky"
           >
       </div>
       <show-users
         v-if="showUsers"
-        @showForm="showForm"
+        @showForm="showAddUserForm"
         @changeUser="changeUser($event)"
         @userDeleted="getUsers"
         :users="users"
@@ -22,12 +22,14 @@
         v-if="showAddUser"
         @hideForm="hideForm"
         :api="api"
+        :headers="headers"
       />
       <change-user
         v-if="showChangeUser"
         @hideForm="hideForm"
         :userID="userToEditID"
         :api="api"
+        :headers="headers"
       />
     </div>
   </div>
@@ -52,7 +54,11 @@ export default {
       showChangeUser: false,
       users: [],
       userToEditID: null,
-      api: "https://unsure-dandelion.herokuapp.com/api/people"
+      api: "https://unsure-dandelion.herokuapp.com/api/people",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
     }
   },
   created(){
@@ -64,7 +70,7 @@ export default {
       .then(res => res.json())
       .then(data => this.users = data.data.slice())
     },
-    showForm(){
+    showAddUserForm(){
       this.showAddUser = true;
       this.showUsers = false;
       this.showChangeUser = false;

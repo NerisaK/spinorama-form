@@ -75,7 +75,8 @@ export default {
         }
     },
     props: {
-        api: String
+        api: String,
+        headers: Object
     },
      emits: [
         'hideForm'
@@ -108,9 +109,7 @@ export default {
             let emails = this.formData.emails;
 
             for(let email in emails){
-
                 let emailValid = this.isEmailValid(emails[email]);
-
                 if(emailValid) {
                     results.push(true)
                 }
@@ -123,7 +122,6 @@ export default {
         },
         validateForm(){
             this.hideMessages();
-
             let nameValid = !this.isInputEmpty(this.formData.firstname);
             let emailsValid = this.validateEmails();
 
@@ -168,11 +166,7 @@ export default {
         //    .catch(error => console.log(error, "Couldn't get new ID"))
         //},
         createUser(){
-            let fullname = this.formData.firstname;
-            if (!this.isInputEmpty(this.formData.lastname)){
-                fullname += " " + this.formData.lastname
-            }
-
+            let fullname = (this.formData.firstname + " " + this.formData.lastname).trim();
             let newUser = {
                 //id: this.newID,
                 name: fullname,
@@ -187,10 +181,7 @@ export default {
 
             fetch(this.api, {
                 method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
+                headers: this.headers,
                 body: jsonData
             })
             .then(response => {
@@ -204,7 +195,7 @@ export default {
             })
         },
         userAdded(user){
-            console.log("Added user: " + user)
+            console.log("Added user: " + user.name)
             this.messages.formUserAdded = true;
             //this.setNewID();
             this.clearForm();
