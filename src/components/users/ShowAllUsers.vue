@@ -31,7 +31,7 @@
     </div>
 </template>
 
-<script>
+<script scoped>
 export default {
     props: {
         users: Array,
@@ -80,5 +80,5 @@ export default {
 </script>
 
 <style scoped>
-    @import '../../assets/users.css'
+    @import '../../assets/users.css';
 </style>

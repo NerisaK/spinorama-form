@@ -6,6 +6,7 @@
                 alt="obrázek uživatele"
             >
         </div>
+
         <form action="submit">
             <label for="form-name">Jméno</label>
             <input type="text"
@@ -13,17 +14,20 @@
                 v-model.trim="formData.firstname"
             >
             <p class="error" v-if="messages.nameError">Jméno je povinné</p>
+
             <label for="form-lastname">Příjmení</label>
             <input type="text"
                 id="form-lastname" name="form-lastname"
                 v-model.trim="formData.lastname"
             >
+
             <label for="form-email">Email</label>
             <input type="text"
                 id="form-email" name="form-email" placeholder="johndoe@mail.com"
                 v-model.trim="formData.emails[0]"
             >
             <p class="error" v-if="messages.mailError[0]">Neplatný email</p>
+
             <div v-for="num in activeEmailInputs" :key="num">
                 <label for="form-email" v-if="haveMoreEmails">
                     Email {{ num + 1}}
@@ -36,10 +40,12 @@
                 >
                 <p class="error" v-if="messages.mailError[num]">Neplatný email</p>
             </div>
+
             <div class="add-email" @click.prevent="addEmailInput" v-if="activeEmailInputs.length < 3">
                 <span class="add-email-button">+</span>
                 <p class="add-email-text">Přidat email</p><br> 
             </div>
+            
             <p class="error" v-if="messages.formError">Někde se stala chyba. Zkus to znovu.</p>
             <div class="save-div">
                 <button class="save-btn" @click.prevent="validateForm">Uložit</button>
@@ -47,6 +53,7 @@
             <p class="success center" v-if="messages.formUserAdded">Uživatel uložen</p>
             <p class="center back" @click.prevent="$emit('hideForm')">zpátky na seznam</p>
         </form>
+
     </div>
 </template>
 
@@ -75,6 +82,9 @@ export default {
     props: {
         api: String
     },
+     emits: [
+        'hideForm'
+    ],
     //mounted(){
     //    this.setNewID();
     //},
@@ -216,5 +226,5 @@ export default {
 </script>
 
 <style scoped>
-    @import '../../assets/form.css'
+    @import '../../assets/form.css';
 </style>
