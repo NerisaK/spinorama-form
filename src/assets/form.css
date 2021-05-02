@@ -1,16 +1,7 @@
-.user-picture {
-    position: relative;
-    bottom: 120px;
-    float: center;
-    background-color: hsl(202, 100%, 96%);
-    margin: 2em auto -8em auto;
-    width: 100px;
-    height: 100px;
-}
-
-.user-picture img {
-    background-color: white;
-    border-radius: 50%;
+h3 {
+    color: hsl(205, 70%, 50%); 
+    text-align: center;
+    margin-bottom: -10px;
 }
 
 form {

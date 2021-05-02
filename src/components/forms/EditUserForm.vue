@@ -1,5 +1,5 @@
 <template>
-    <div class="user-picture" v-if="user.avatar">
+    <div class="picture" v-if="user.avatar">
             <img
                 :src="user.avatar"
                 alt="obrázek uživatele"
@@ -220,12 +220,9 @@ export default {
 </script>
 
 <style scoped>
-    @import '../../assets/form.css';
-
-    h3 {
-    color: hsl(205, 70%, 50%); 
-    text-align: center;
-    margin-bottom: -10px;
-    }
+    @import '../../assets/form.css'; 
     
+    .picture {
+        background-color: hsl(202, 100%, 96%);
+    }
 </style>

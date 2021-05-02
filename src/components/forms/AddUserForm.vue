@@ -1,11 +1,6 @@
 <template>
     <div>
-        <div class="user-picture">
-            <img
-                src="https://avatars.dicebear.com/api/male/jwnfdj23o4njh.svg"
-                alt="obrázek uživatele"
-            >
-        </div>
+        <h3>Přidat uživatele</h3>
 
         <form action="submit">
             <label for="form-name">Jméno</label>

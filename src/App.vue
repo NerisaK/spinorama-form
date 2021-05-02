@@ -4,6 +4,12 @@
       <div class="header">
         <h1 class="logo">Spinorama</h1>
       </div>
+      <div v-if="showUsers || showAddUser" class="picture">
+          <img
+            src="./assets/hockey-icon.svg"
+            alt="hokej - ikonka"
+          >
+      </div>
       <show-users
         v-if="showUsers"
         @showForm="showForm"
@@ -67,6 +73,7 @@ export default {
       this.showAddUser = false;
       this.showChangeUser = false;
       this.showUsers = true;
+      this.getUsers();
     },
     changeUser(id){
       this.showUsers = false;
@@ -81,6 +88,7 @@ export default {
 <style>
   html {
     font-family: Arial, Helvetica, sans-serif;
+    word-wrap: break-word;
   }
 
   .container {
@@ -94,9 +102,9 @@ export default {
   .header {
     padding: 4em 4em;
     background: linear-gradient(to bottom right,
-      hsl(190, 80%, 50%) 50%, transparent 50.5%)
+      hsl(190, 80%, 60%) 50%, transparent 50.5%)
       no-repeat bottom,
-      linear-gradient(0deg, hsl(190, 80%, 50%), hsl(190, 80%, 50%))
+      linear-gradient(0deg, hsl(190, 80%, 60%), hsl(190, 80%, 60%))
       no-repeat top;
     background-size: 100% 7em, 100% calc(100% - 7em)
   }
@@ -107,6 +115,22 @@ export default {
     font-weight: 800;
     margin: auto auto 2.5em auto;
     text-align: center;
+  }
+
+  .picture {
+    position: relative;
+    bottom: 120px;
+    float: center;
+    margin: 2em auto -7em auto;
+    width: 100px;
+    height: 100px;
+  }
+
+  .picture img {
+    background-color: white;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
   }
 
   .error {
@@ -127,6 +151,14 @@ export default {
     }
     .header {
       padding: 4em 0;
+    }
+
+    .users {
+      margin: 0.5em 3em;
+    }
+
+    ul{
+      padding-left: 10px;
     }
   }
 </style>
