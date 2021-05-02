@@ -18,8 +18,8 @@
                     <button class="delete-btn"
                         @click.prevent="deleteUser(user.id)">smazat uživatele
                     </button>  
-                    <p class="error" v-if="deleteError">Uživatele se nepodařilo vymazat</p>
-                    <p class="success" v-if="deleteSuccess">Uživatel byl úspěšně vymazán</p>
+                    <p class="error" v-if="deleteError[user.id]">Uživatele se nepodařilo vymazat</p>
+                    <p class="success" v-if="deleteSuccess[user.id]">Uživatel byl úspěšně vymazán</p>
                 </div>
                 
             </div>
@@ -40,8 +40,8 @@ export default {
     },
     data(){
         return {
-            deleteError: false,
-            deleteSuccess: false  
+            deleteError: [],
+            deleteSuccess: []  
         }
     },
     methods: {
@@ -56,23 +56,22 @@ export default {
             }
         },
         deleteUser(id){
-            console.log(id)
             fetch(this.api + "/" + id, {method: 'DELETE'})
             .then(response => {
               if(response.ok) {
                   console.log("User was successfully deleted")
-                this.deleteSuccess = true;
+                this.deleteSuccess[id] = true;
                 setTimeout(()=>{
-                    this.deleteSuccess = false;
+                    this.deleteSuccess[id] = false;
                     this.$emit('userDeleted')
                 }, 2000)
               }
             })
             .catch(error => {
                 console.log(error); 
-                this.deleteError = true;
+                this.deleteError[id] = true;
                 setTimeout(()=>{
-                    this.deleteError = false;
+                    this.deleteError[id] = false;
                 }, 2000)
             })
         }
