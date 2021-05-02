@@ -12,7 +12,14 @@
                             {{ email }}
                         </li>
                     </ul>
-                    <button class="change-btn">změnit údaje</button> 
+                    <button class="change-btn"
+                        @click.prevent="$emit('changeUser', user.id)">změnit údaje
+                    </button>
+                    <button class="delete-btn"
+                        @click.prevent="deleteUser(user.id)">smazat uživatele
+                    </button>  
+                    <p class="error" v-if="deleteError">Uživatele se nepodařilo vymazat</p>
+                    <p class="success" v-if="deleteSuccess">Uživatel byl úspěšně vymazán</p>
                 </div>
                 
             </div>
@@ -26,21 +33,18 @@
 
 <script>
 export default {
+    props: {
+        users: Array,
+        api: String,
+        
+    },
     data(){
         return {
-            users: [],
-            api: "https://unsure-dandelion.herokuapp.com/api/people"
+            deleteError: false,
+            deleteSuccess: false  
         }
     },
-    created(){
-        this.getUsers()
-    },
     methods: {
-        getUsers(){
-            fetch(this.api)
-            .then(res => res.json())
-            .then(data => this.users = data.data.slice())
-        },
         showDetail(index){
             let user = this.users[index];
             
@@ -50,81 +54,32 @@ export default {
             else {
                 user.showDetail = true;    
             }
+        },
+        deleteUser(id){
+            console.log(id)
+            fetch(this.api + "/" + id, {method: 'DELETE'})
+            .then(response => {
+              if(response.ok) {
+                  console.log("User was successfully deleted")
+                this.deleteSuccess = true;
+                setTimeout(()=>{
+                    this.deleteSuccess = false;
+                    this.$emit('userDeleted')
+                }, 2000)
+              }
+            })
+            .catch(error => {
+                console.log(error); 
+                this.deleteError = true;
+                setTimeout(()=>{
+                    this.deleteError = false;
+                }, 2000)
+            })
         }
     }
 }
 </script>
 
 <style scoped>
-
-    .users {
-        margin: 2em 4em;
-        color: hsl(200, 100%, 45%);
-        font-size: 0.9rem;        
-    }
-
-    .user {
-        border-top: 2px solid hsla(200, 100%, 45%, 0.2);
-        border-left: 2px solid hsla(200, 100%, 45%, 0.2);
-        border-right: 3px solid hsla(200, 100%, 45%, 0.3);
-        border-bottom: 3px solid hsla(200, 100%, 45%, 0.3);
-        padding: 5px 10px;
-        margin-bottom: 15px;
-    }
-
-    h2 {
-        margin-bottom: 35px;
-        color: hsl(205, 70%, 50%); 
-        text-align: center;
-    }
-
-    .name {
-        font-weight: bold;
-        color: hsl(200, 100%, 70%);
-        font-size: 1rem; 
-    }
-
-    .name:hover {
-        cursor: pointer;
-        color: hsl(200, 100%, 60%);
-    }
-
-    .info {
-        margin-top: 20px;
-        margin-left: 10px;
-    }
-
-    .avatar {
-        width: 100px;
-        height: 100px;
-    }
-
-    .add-div {
-        display: flex;
-        justify-content: center;
-    }
-
-    button {
-        background-color: hsl(200, 100%, 60%);
-        border-radius: 0.5rem;
-        border: none;
-        text-align: center;
-        color: white;    
-    }
-
-    button:hover{
-        cursor: pointer;
-        background-color: hsl(200, 100%, 50%);
-    }
-
-    .add-btn {
-        padding: 1em 3em;
-        margin-top: 2em;
-    }
-
-    .change-btn {
-        padding: 0.5em 1em;
-        margin: 10px 0;
-    }
-
+    @import '../../assets/users.css'
 </style>

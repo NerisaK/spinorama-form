@@ -70,8 +70,10 @@ export default {
                 formUserAdded: false,
             },
             //newID: null,
-            api: "https://unsure-dandelion.herokuapp.com/api/people"
         }
+    },
+    props: {
+        api: String
     },
     //mounted(){
     //    this.setNewID();
@@ -213,138 +215,6 @@ export default {
 }
 </script>
 
-
 <style scoped>
-
-    .user-picture {
-        position: relative;
-        bottom: 120px;
-        float: center;
-        background-color: hsl(202, 100%, 96%);
-        margin: 2em auto -8em auto;
-        width: 100px;
-        height: 100px;
-    }
-
-    .user-picture img {
-        background-color: white;
-        border-radius: 50%;
-    }
-
-    form {
-        padding: 4em 4em;
-    }
-
-    label, p {
-        font-size: 0.9rem;
-        font-weight: bold;
-    }
-
-    input {
-        background-color: hsl(202, 100%, 96%);
-        color: hsl(200, 100%, 50%);
-        height: 40px;
-        width: 95%;
-        padding-left: 1em;
-        margin-top: 0.5em;
-        margin-bottom: 1em;
-        border-radius: 0.8em;
-        border: 3px solid hsl(202, 100%, 85%);
-        display: block;
-    }
-
-    input:focus {
-        background-color: hsl(202, 100%, 93%);
-        outline: none;
-    }
-
-    ::placeholder {
-        color: hsl(200, 100%, 50%);
-        font-size: 1.1em;
-    }
-
-    .add-email-text {
-        display: inline-block;
-        margin-left: 1em;
-        font-size: 1em;
-    }
-
-    .add-email-button {
-        display: inline-block;
-        border: 3.2px solid hsl(200, 100%, 50%);
-        border-radius: 50%;
-        padding: 0 0.4rem;
-        color: hsl(200, 100%, 50%);
-        font-size: 1.3em;
-    }
-
-    .save-div {
-        display: flex;
-        justify-content: space-around;
-    }
-
-    .save-btn {
-        background-color: hsl(200, 100%, 50%);
-        padding: 2em 6em 1.2em 6em;
-        margin-top: 4em;
-        border-radius: 0.5rem;
-        border: none;
-        text-align: center;
-        font-size: 0.7rem;
-        color: white;
-    }
-
-    .save-btn:hover {
-        cursor: pointer;
-        background-color: hsl(200, 100%, 70%);
-    }
-
-    .add-email-button:hover, .add-email:hover {
-        cursor: pointer;
-        border-color: hsl(200, 100%, 70%);
-        color: hsl(200, 100%, 70%);
-    }
-
-    .error {
-        color: hsl(0, 80%, 60%);
-        font-weight: 200;
-        margin-bottom: 30px;    
-    }
-
-    .error-overline {
-        border: 2px solid hsl(0, 80%, 70%);        
-    }
-
-    .success{
-        color: hsl(103, 50%, 60%);
-        font-weight: 200;
-        margin-bottom: 35px;
-    }
-
-    .center {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .delete {
-        color: hsl(0, 80%, 60%);
-        font-size: 1.1em;
-        margin-left: 15px;
-    }
-
-    .delete:hover {
-        cursor: pointer;
-    }
-
-    .back {
-        font-weight: 400;
-        margin-top: 40px;
-        margin-bottom: -20px;
-    }
-
-    .back:hover {
-        cursor: pointer;
-        font-weight: bold;
-    }
-    
+    @import '../../assets/form.css'
 </style>

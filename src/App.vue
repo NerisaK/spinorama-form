@@ -4,39 +4,76 @@
       <div class="header">
         <h1 class="logo">Spinorama</h1>
       </div>
-      <keep-alive>
-        <show-users v-if="showUsers" @showForm="showForm"/>
-      </keep-alive>
-      <add-user v-if="showAddUser" @hideForm="hideForm"/>
+      <show-users
+        v-if="showUsers"
+        @showForm="showForm"
+        @changeUser="changeUser($event)"
+        @userDeleted="getUsers"
+        :users="users"
+        :api="api"
+      />
+      <add-user
+        v-if="showAddUser"
+        @hideForm="hideForm"
+        :api="api"
+      />
+      <change-user
+        v-if="showChangeUser"
+        @hideForm="hideForm"
+        :userID="userToEditID"
+        :api="api"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import AddUser from './components/forms/AddUserForm'
+import ChangeUser from './components/forms/EditUserForm'
 import ShowUsers from './components/users/ShowAllUsers'
 
 export default {
   name: 'App',
   components: {
     AddUser,
-    ShowUsers
+    ShowUsers,
+    ChangeUser
   },
   data(){
     return {
       showUsers: true,
-      showAddUser: false
+      showAddUser: false,
+      showChangeUser: false,
+      users: [],
+      userToEditID: null,
+      api: "https://unsure-dandelion.herokuapp.com/api/people"
     }
   },
+  created(){
+    this.getUsers()
+  },      
   methods: {
+    getUsers(){
+      fetch(this.api)
+      .then(res => res.json())
+      .then(data => this.users = data.data.slice())
+    },
     showForm(){
       this.showAddUser = true;
       this.showUsers = false;
+      this.showChangeUser = false;
     },
     hideForm(){
       this.showAddUser = false;
+      this.showChangeUser = false;
       this.showUsers = true;
-    }
+    },
+    changeUser(id){
+      this.showUsers = false;
+      this.showAddUser = false;
+      this.showChangeUser = true;
+      this.userToEditID = id;
+    },    
   }
 }
 </script>
@@ -70,6 +107,18 @@ export default {
     font-weight: 800;
     margin: auto auto 2.5em auto;
     text-align: center;
+  }
+
+  .error {
+    color: hsl(0, 80%, 60%);
+    font-weight: 200;
+    margin-bottom: 30px;    
+  }
+
+  .success{
+    color: hsl(103, 50%, 60%);
+    font-weight: 200;
+    margin-bottom: 35px;
   }
 
   @media(max-width: 470px){
