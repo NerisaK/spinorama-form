@@ -155,11 +155,11 @@ export default {
         },
         changesValid(){
             this.hideMessages();
+            if (!this.validateEmails()) return false; 
 
             let user = this.user;
             let data = this.formData;
 
-            if (!this.validateEmails()) return false; 
             if((user.name === data.name)
                 && (user.avatar === data.img)
                 && (user.emails === data.emails)
@@ -168,7 +168,7 @@ export default {
             return true;
         },
         saveChanges(){
-            if(!this.changesValid) return;
+            if(!this.changesValid()) return;
 
             let jsonData = this.stageChanges();
                         

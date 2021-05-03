@@ -16,6 +16,12 @@
                 v-model.trim="formData.lastname"
             >
 
+            <label for="form-avatar">Avatar</label>
+            <input type="text"
+                id="form-avatar" name="form-avatar" placeholder="https://..."
+                v-model.trim="formData.avatar"
+            >
+
             <label for="form-email">Email</label>
             <input type="text"
                 id="form-email" name="form-email" placeholder="johndoe@mail.com"
@@ -60,6 +66,7 @@ export default {
             formData: {
                 firstname: "",
                 lastname: "",
+                avatar: "",
                 emails: [""]
             },
             activeEmailInputs: [],
@@ -71,7 +78,6 @@ export default {
                 formError: false,
                 formUserAdded: false,
             },
-            //newID: null,
         }
     },
     props: {
@@ -81,9 +87,6 @@ export default {
      emits: [
         'hideForm'
     ],
-    //mounted(){
-    //    this.setNewID();
-    //},
     methods: {
         addEmailInput(){
             this.activeEmailInputs.push(this.activeEmailInputs.length + 1);
@@ -144,35 +147,20 @@ export default {
             let data = this.formData;            
             data.firstname = "";
             data.lastname = "";
+            data.avatar = "";
             data.emails.splice(0, data.emails.length, "");
             this.activeEmailInputs.slice(0, this.activeEmailInputs.length)
         },
-        //giveID(arr, index){
-        //    let num = index;
-        //    if(arr.includes(index)){
-        //        num++;
-        //        this.giveID(arr, num)
-        //    }
-        //    return num
-        //},
-        //async setNewID(){
-        //    await fetch(this.api)
-        //    .then(res => res.json())
-        //    .then(data => {
-        //        let numUsers = data.data.length;
-        //        let idArr = data.data.map(user => user.id);
-        //        this.newID = this.giveID(idArr, numUsers);
-        //    })
-        //    .catch(error => console.log(error, "Couldn't get new ID"))
-        //},
         createUser(){
             let fullname = (this.formData.firstname + " " + this.formData.lastname).trim();
+            let avatar = null;
+            if (!this.isInputEmpty(this.formData.avatar)) {avatar = this.formData.avatar}
+
             let newUser = {
-                //id: this.newID,
                 name: fullname,
                 emails: this.formData.emails.slice(),
                 data: null,
-                avatar: null
+                avatar: avatar
             };
             return JSON.stringify(newUser)
         },
@@ -186,7 +174,7 @@ export default {
             })
             .then(response => {
                 if(response.ok) {
-                    this.userAdded(jsonData)
+                    this.userAdded()
                 }
             })
             .catch(error => {
@@ -194,10 +182,9 @@ export default {
                 this.messages.formError = true; 
             })
         },
-        userAdded(user){
-            console.log("Added user: " + user.name)
+        userAdded(){
+            console.log("User added.")
             this.messages.formUserAdded = true;
-            //this.setNewID();
             this.clearForm();
             setTimeout(()=>{ this.messages.formUserAdded = false }, 5000)
         },      
